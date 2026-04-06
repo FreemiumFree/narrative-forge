@@ -34,7 +34,7 @@ if torch.cuda.is_available():
     print(f'CUDA version: {torch.version.cuda}')
     for i in range(torch.cuda.device_count()):
         name = torch.cuda.get_device_name(i)
-        mem = torch.cuda.get_device_properties(i).total_mem / 1024**3
+        mem = torch.cuda.get_device_properties(i).total_memory / 1024**3
         print(f'GPU {i}: {name} ({mem:.1f} GB)')
     print('GPU setup OK!')
 else:
