@@ -71,6 +71,52 @@ def run_merge_cmd():
     run_merge()
 
 
+def run_export_cmd():
+    """Convert merged model to GGUF."""
+    sys.path.insert(0, os.path.dirname(__file__))
+    from src.export import run_export
+    run_export()
+
+
+def run_register_cmd():
+    """Register the model with Ollama."""
+    import yaml
+
+    with open("configs/training_config.yaml") as f:
+        cfg = yaml.safe_load(f)
+
+    model_name = cfg["export"]["ollama_model_name"]
+    gguf_path = os.path.join(cfg["export"]["gguf_dir"], f"{model_name}.gguf")
+
+    if not os.path.exists(gguf_path):
+        print(f"ERROR: No GGUF model found at {gguf_path}")
+        print("Run 'python cli.py export' first.")
+        sys.exit(1)
+
+    try:
+        subprocess.run(["ollama", "--version"], capture_output=True, check=True)
+    except FileNotFoundError:
+        print("ERROR: Ollama is not installed.")
+        print("Install from: https://ollama.com/download")
+        print("After installing, run this command again.")
+        sys.exit(1)
+
+    print(f"=== Registering {model_name} with Ollama ===\n")
+
+    result = subprocess.run(
+        ["ollama", "create", model_name, "-f", "Modelfile"],
+        capture_output=False,
+    )
+
+    if result.returncode == 0:
+        print(f"\nModel '{model_name}' registered with Ollama!")
+        print(f"\nTest it:  ollama run {model_name}")
+        print(f"API:     curl http://localhost:11434/api/generate -d '{{\"model\": \"{model_name}\", \"prompt\": \"Describe an ancient forest at dawn.\"}}'")
+    else:
+        print("\nERROR: Failed to register model with Ollama.")
+        sys.exit(1)
+
+
 def main():
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
         print("Narrative Forge — LLM Fine-Tuning Pipeline\n")
@@ -92,6 +138,10 @@ def main():
         run_evaluate_cmd()
     elif command == "merge":
         run_merge_cmd()
+    elif command == "export":
+        run_export_cmd()
+    elif command == "register":
+        run_register_cmd()
     else:
         print(f"Command '{command}' not yet implemented.")
         sys.exit(1)
