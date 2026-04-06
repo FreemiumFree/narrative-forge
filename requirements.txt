@@ -11,6 +11,7 @@ datasets>=3.2.0
 ebooklib>=0.18
 beautifulsoup4>=4.12.0
 PyPDF2>=3.0.0
+mobi>=0.4.0
 pyyaml>=6.0.0
 
 # Evaluation

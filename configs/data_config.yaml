@@ -4,6 +4,7 @@ supported_formats:
   - ".txt"
   - ".epub"
   - ".pdf"
+  - ".mobi"
 
 # Chunking
 chunking:
