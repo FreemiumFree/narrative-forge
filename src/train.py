@@ -9,7 +9,7 @@ from transformers import (
     AutoTokenizer,
     BitsAndBytesConfig,
 )
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig
 from trl import SFTTrainer, SFTConfig
 
 
@@ -59,8 +59,6 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         device_map="auto",
         torch_dtype=torch.float16,
     )
-    model = prepare_model_for_kbit_training(model)
-
     lora_cfg = cfg["lora"]
     peft_config = LoraConfig(
         r=lora_cfg["r"],
@@ -70,10 +68,6 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         bias=lora_cfg["bias"],
         task_type=lora_cfg["task_type"],
     )
-
-    model = get_peft_model(model, peft_config)
-    trainable, total = model.get_nb_trainable_parameters()
-    print(f"Trainable parameters: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)\n")
 
     print("Loading training data...")
     data_cfg_path = "configs/data_config.yaml"
