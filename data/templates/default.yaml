@@ -1,0 +1,30 @@
+prose:
+  - "Write a vivid, immersive description of {scene_hint}."
+  - "Describe {scene_hint} with rich sensory detail and atmosphere."
+  - "Paint a scene: {scene_hint}. Use evocative language."
+  - "Write a passage that brings {scene_hint} to life."
+
+dialogue:
+  - "Write a dialogue scene between characters where {scene_hint}."
+  - "Write a conversation that reveals character and advances tension: {scene_hint}."
+  - "Craft a dialogue exchange: {scene_hint}."
+
+action:
+  - "Write an intense action sequence: {scene_hint}."
+  - "Write a fast-paced scene of {scene_hint}."
+  - "Describe {scene_hint} with visceral, kinetic prose."
+
+worldbuilding:
+  - "Describe the lore behind {scene_hint}, weaving it naturally into narrative."
+  - "Explain {scene_hint} as it would appear in a fantasy novel — show, don't tell."
+  - "Write a passage that reveals {scene_hint} through story, not exposition."
+
+internal:
+  - "Write a character's internal monologue as they {scene_hint}."
+  - "Show a character's thoughts and emotions during {scene_hint}."
+  - "Write an introspective passage: a character processes {scene_hint}."
+
+transition:
+  - "Write a scene transition: {scene_hint}."
+  - "Bridge two scenes: {scene_hint}."
+  - "Write an opening or closing passage for a chapter: {scene_hint}."

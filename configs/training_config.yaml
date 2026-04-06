@@ -1,0 +1,51 @@
+# Model
+base_model: "mistralai/Mistral-7B-Instruct-v0.3"
+model_type: "causal_lm"
+
+# QLoRA
+quantization:
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "float16"
+  bnb_4bit_use_double_quant: true
+
+lora:
+  r: 64
+  lora_alpha: 128
+  lora_dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training
+training:
+  output_dir: "models/checkpoints"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 0.0002
+  lr_scheduler_type: "cosine"
+  warmup_ratio: 0.1
+  max_seq_length: 2048
+  fp16: true
+  bf16: false
+  logging_steps: 10
+  save_strategy: "steps"
+  save_steps: 500
+  save_total_limit: 6
+  optim: "paged_adamw_8bit"
+  seed: 42
+
+# Export
+export:
+  merged_dir: "models/merged"
+  gguf_dir: "models/gguf"
+  gguf_quantization: "q5_k_m"
+  ollama_model_name: "narrative-forge"

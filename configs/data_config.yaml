@@ -1,0 +1,32 @@
+# Input
+raw_dir: "data/raw"
+supported_formats:
+  - ".txt"
+  - ".epub"
+  - ".pdf"
+
+# Chunking
+chunking:
+  min_chunk_words: 50
+  max_chunk_words: 800
+  overlap_sentences: 2
+
+# Classification thresholds
+classification:
+  dialogue_quote_ratio: 0.3
+  action_verb_ratio: 0.15
+  internal_thought_indicators:
+    - "thought"
+    - "wondered"
+    - "realized"
+    - "felt"
+    - "knew"
+    - "considered"
+    - "remembered"
+
+# Output
+processed_dir: "data/processed"
+output_file: "training_data.jsonl"
+stats_file: "stats.json"
+train_split: 0.9
+templates_file: "data/templates/default.yaml"
