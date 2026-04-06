@@ -8,10 +8,9 @@ from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     BitsAndBytesConfig,
-    TrainingArguments,
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from trl import SFTTrainer
+from trl import SFTTrainer, SFTConfig
 
 
 def format_training_example(example: dict, tokenizer) -> str:
@@ -93,14 +92,21 @@ def run_training(config_path: str = "configs/training_config.yaml"):
     print(f"Validation examples: {len(dataset['validation'])}\n")
 
     train_cfg = cfg["training"]
-    training_args = TrainingArguments(
+
+    # Calculate warmup steps from ratio
+    total_steps = (
+        len(dataset["train"]) // (train_cfg["per_device_train_batch_size"] * train_cfg["gradient_accumulation_steps"])
+    ) * train_cfg["num_train_epochs"]
+    warmup_steps = int(total_steps * train_cfg["warmup_ratio"])
+
+    sft_config = SFTConfig(
         output_dir=train_cfg["output_dir"],
         num_train_epochs=train_cfg["num_train_epochs"],
         per_device_train_batch_size=train_cfg["per_device_train_batch_size"],
         gradient_accumulation_steps=train_cfg["gradient_accumulation_steps"],
         learning_rate=train_cfg["learning_rate"],
         lr_scheduler_type=train_cfg["lr_scheduler_type"],
-        warmup_ratio=train_cfg["warmup_ratio"],
+        warmup_steps=warmup_steps,
         fp16=train_cfg["fp16"],
         bf16=train_cfg["bf16"],
         logging_steps=train_cfg["logging_steps"],
@@ -111,17 +117,17 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         seed=train_cfg["seed"],
         report_to="none",
         remove_unused_columns=False,
+        max_length=train_cfg["max_seq_length"],
     )
 
     trainer = SFTTrainer(
         model=model,
-        args=training_args,
+        args=sft_config,
         train_dataset=dataset["train"],
         eval_dataset=dataset["validation"],
         processing_class=tokenizer,
         peft_config=peft_config,
         formatting_func=lambda ex: format_training_example(ex, tokenizer),
-        max_seq_length=train_cfg["max_seq_length"],
     )
 
     print("Starting training...\n")
