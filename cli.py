@@ -50,6 +50,27 @@ def run_prepare_cmd():
     print(f"Type breakdown: {stats['type_breakdown']}")
 
 
+def run_train_cmd():
+    """Run QLoRA fine-tuning."""
+    sys.path.insert(0, os.path.dirname(__file__))
+    from src.train import run_training
+    run_training()
+
+
+def run_evaluate_cmd():
+    """Generate sample outputs for review."""
+    sys.path.insert(0, os.path.dirname(__file__))
+    from src.evaluate import run_evaluation
+    run_evaluation()
+
+
+def run_merge_cmd():
+    """Merge LoRA adapter into base model."""
+    sys.path.insert(0, os.path.dirname(__file__))
+    from src.merge import run_merge
+    run_merge()
+
+
 def main():
     if len(sys.argv) < 2 or sys.argv[1] not in COMMANDS:
         print("Narrative Forge — LLM Fine-Tuning Pipeline\n")
@@ -65,6 +86,12 @@ def main():
         run_setup()
     elif command == "prepare":
         run_prepare_cmd()
+    elif command == "train":
+        run_train_cmd()
+    elif command == "evaluate":
+        run_evaluate_cmd()
+    elif command == "merge":
+        run_merge_cmd()
     else:
         print(f"Command '{command}' not yet implemented.")
         sys.exit(1)
