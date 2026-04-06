@@ -13,15 +13,15 @@ fi
 source venv/Scripts/activate 2>/dev/null || source venv/bin/activate
 
 # Upgrade pip
-pip install --upgrade pip
+python -m pip install --upgrade pip
 
 # Install PyTorch with CUDA
 echo "Installing PyTorch with CUDA support..."
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 # Install remaining dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Verify GPU
 echo ""
