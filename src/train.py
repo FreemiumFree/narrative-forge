@@ -37,7 +37,7 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         print("ERROR: No CUDA GPU available. Training requires a GPU.")
         return
     print(f"GPU: {torch.cuda.get_device_name(0)}")
-    print(f"VRAM: {torch.cuda.get_device_properties(0).total_mem / 1024**3:.1f} GB\n")
+    print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB\n")
 
     quant_cfg = cfg["quantization"]
     bnb_config = BitsAndBytesConfig(
