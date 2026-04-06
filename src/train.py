@@ -57,7 +57,7 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         model_name,
         quantization_config=bnb_config,
         device_map="auto",
-        torch_dtype=torch.float16,
+        dtype=torch.float16,
     )
     lora_cfg = cfg["lora"]
     peft_config = LoraConfig(
