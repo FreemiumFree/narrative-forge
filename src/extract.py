@@ -39,12 +39,15 @@ def extract_from_directory(dir_path: str) -> list[dict]:
 
     for file_path in sorted(dir_path.iterdir()):
         if file_path.suffix.lower() in SUPPORTED_FORMATS:
-            text = extract_text(str(file_path))
-            if text.strip():
-                results.append({
-                    "source": file_path.name,
-                    "text": text,
-                })
+            try:
+                text = extract_text(str(file_path))
+                if text.strip():
+                    results.append({
+                        "source": file_path.name,
+                        "text": text,
+                    })
+            except Exception as e:
+                print(f"  WARNING: Failed to extract {file_path.name}: {e}")
 
     return results
 
@@ -84,34 +87,44 @@ def _extract_epub(path: Path) -> str:
 
 
 def _extract_mobi(path: Path) -> str:
-    """Extract text from a MOBI file."""
+    """Extract text from a MOBI file by converting to EPUB first."""
     try:
         import mobi
-        from bs4 import BeautifulSoup
     except ImportError:
-        print("WARNING: mobi/beautifulsoup4 not installed. Skipping MOBI.")
+        print("WARNING: mobi not installed. Skipping MOBI.")
         return ""
 
-    import tempfile
+    # mobi.extract returns (temp_dir, epub_path)
+    temp_dir, epub_path = mobi.extract(str(path))
+    epub_file = Path(epub_path)
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        _, extracted = mobi.extract(str(path), tmp_dir)
-        extracted_path = Path(extracted)
+    # Try epub extraction first
+    try:
+        result = _extract_epub(epub_file)
+        if result.strip():
+            return result
+    except Exception:
+        pass
 
-        # mobi.extract returns a directory or an HTML file
-        if extracted_path.is_file():
-            html_files = [extracted_path]
-        else:
-            html_files = sorted(extracted_path.rglob("*.html")) + sorted(extracted_path.rglob("*.htm"))
+    # Fallback: parse any HTML files in the temp directory
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError:
+        return ""
 
-        chapters = []
-        for html_file in html_files:
+    temp = Path(temp_dir)
+    html_files = sorted(temp.rglob("*.html")) + sorted(temp.rglob("*.htm"))
+    chapters = []
+    for html_file in html_files:
+        try:
             html = html_file.read_text(encoding="utf-8", errors="ignore")
             soup = BeautifulSoup(html, "html.parser")
             text = soup.get_text(separator="\n")
             text = text.strip()
             if text:
                 chapters.append(text)
+        except Exception:
+            continue
 
     return "\n\n".join(chapters)
 
