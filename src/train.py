@@ -7,9 +7,8 @@ from datasets import load_dataset
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
-    BitsAndBytesConfig,
 )
-from peft import LoraConfig
+from peft import LoraConfig, get_peft_model
 from trl import SFTTrainer, SFTConfig
 
 
@@ -23,11 +22,11 @@ def format_training_example(example: dict, tokenizer) -> str:
 
 
 def run_training(config_path: str = "configs/training_config.yaml"):
-    """Run QLoRA fine-tuning."""
+    """Run LoRA fine-tuning."""
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    print("=== Narrative Forge — QLoRA Training ===\n")
+    print("=== Narrative Forge — LoRA Training ===\n")
 
     model_name = cfg["base_model"]
     print(f"Base model: {model_name}")
@@ -35,16 +34,10 @@ def run_training(config_path: str = "configs/training_config.yaml"):
     if not torch.cuda.is_available():
         print("ERROR: No CUDA GPU available. Training requires a GPU.")
         return
-    print(f"GPU: {torch.cuda.get_device_name(0)}")
-    print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB\n")
-
-    quant_cfg = cfg["quantization"]
-    bnb_config = BitsAndBytesConfig(
-        load_in_4bit=quant_cfg["load_in_4bit"],
-        bnb_4bit_quant_type=quant_cfg["bnb_4bit_quant_type"],
-        bnb_4bit_compute_dtype=getattr(torch, quant_cfg["bnb_4bit_compute_dtype"]),
-        bnb_4bit_use_double_quant=quant_cfg["bnb_4bit_use_double_quant"],
-    )
+    gpu_name = torch.cuda.get_device_name(0)
+    vram_gb = torch.cuda.get_device_properties(0).total_memory / 1024**3
+    print(f"GPU: {gpu_name}")
+    print(f"VRAM: {vram_gb:.1f} GB\n")
 
     print("Loading tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -52,13 +45,14 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    print("Loading model in 4-bit quantization...")
+    # Load model in FP16 (no quantization — 7B in FP16 = ~14GB, fits in 24GB VRAM)
+    print("Loading model in FP16...")
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
-        quantization_config=bnb_config,
+        torch_dtype=torch.float16,
         device_map="auto",
-        dtype=torch.float16,
     )
+
     lora_cfg = cfg["lora"]
     peft_config = LoraConfig(
         r=lora_cfg["r"],
@@ -68,6 +62,10 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         bias=lora_cfg["bias"],
         task_type=lora_cfg["task_type"],
     )
+
+    model = get_peft_model(model, peft_config)
+    trainable, total = model.get_nb_trainable_parameters()
+    print(f"Trainable parameters: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)\n")
 
     print("Loading training data...")
     data_cfg_path = "configs/data_config.yaml"
@@ -101,26 +99,27 @@ def run_training(config_path: str = "configs/training_config.yaml"):
         learning_rate=train_cfg["learning_rate"],
         lr_scheduler_type=train_cfg["lr_scheduler_type"],
         warmup_steps=warmup_steps,
-        fp16=train_cfg["fp16"],
-        bf16=train_cfg["bf16"],
+        fp16=True,
+        bf16=False,
         logging_steps=train_cfg["logging_steps"],
         save_strategy=train_cfg["save_strategy"],
         save_steps=train_cfg["save_steps"],
         save_total_limit=train_cfg["save_total_limit"],
-        optim=train_cfg["optim"],
+        optim="adamw_torch",
         seed=train_cfg["seed"],
         report_to="none",
         remove_unused_columns=False,
         max_length=train_cfg["max_seq_length"],
+        gradient_checkpointing=True,
     )
 
+    # Pass the already-wrapped PEFT model — no peft_config here
     trainer = SFTTrainer(
         model=model,
         args=sft_config,
         train_dataset=dataset["train"],
         eval_dataset=dataset["validation"],
         processing_class=tokenizer,
-        peft_config=peft_config,
         formatting_func=lambda ex: format_training_example(ex, tokenizer),
     )
 
