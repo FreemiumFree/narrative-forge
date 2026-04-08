@@ -3,28 +3,42 @@ prose:
   - "Describe {scene_hint} with rich sensory detail and atmosphere."
   - "Paint a scene: {scene_hint}. Use evocative language."
   - "Write a passage that brings {scene_hint} to life."
+  - "Write an original fantasy passage inspired by: {scene_hint}."
+  - "Compose a descriptive paragraph in the style of epic fantasy: {scene_hint}."
+  - "Write prose that evokes wonder and atmosphere: {scene_hint}."
 
 dialogue:
-  - "Write a dialogue scene between characters where {scene_hint}."
+  - "Write a dialogue scene between original characters where {scene_hint}."
   - "Write a conversation that reveals character and advances tension: {scene_hint}."
-  - "Craft a dialogue exchange: {scene_hint}."
+  - "Craft a dialogue exchange between unnamed characters: {scene_hint}."
+  - "Write a tense exchange between two people: {scene_hint}."
+  - "Write dialogue that conveys emotion through subtext: {scene_hint}."
 
 action:
   - "Write an intense action sequence: {scene_hint}."
-  - "Write a fast-paced scene of {scene_hint}."
+  - "Write a fast-paced combat scene: {scene_hint}."
   - "Describe {scene_hint} with visceral, kinetic prose."
+  - "Write a fight scene with clear choreography and stakes: {scene_hint}."
+  - "Write an action passage that maintains tension throughout: {scene_hint}."
 
 worldbuilding:
   - "Describe the lore behind {scene_hint}, weaving it naturally into narrative."
   - "Explain {scene_hint} as it would appear in a fantasy novel — show, don't tell."
   - "Write a passage that reveals {scene_hint} through story, not exposition."
+  - "Describe a magic system or power structure: {scene_hint}."
+  - "Write world-building that feels lived-in and organic: {scene_hint}."
+  - "Describe the rules and consequences of a fantastical element: {scene_hint}."
 
 internal:
   - "Write a character's internal monologue as they {scene_hint}."
   - "Show a character's thoughts and emotions during {scene_hint}."
   - "Write an introspective passage: a character processes {scene_hint}."
+  - "Write the inner thoughts of someone facing a difficult realization: {scene_hint}."
+  - "Convey emotional depth through a character's private reflections: {scene_hint}."
 
 transition:
   - "Write a scene transition: {scene_hint}."
   - "Bridge two scenes: {scene_hint}."
   - "Write an opening or closing passage for a chapter: {scene_hint}."
+  - "Write a passage that shifts tone from tension to quiet reflection: {scene_hint}."
+  - "Write a transition that carries emotional weight: {scene_hint}."

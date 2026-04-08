@@ -6,11 +6,14 @@ supported_formats:
   - ".pdf"
   - ".mobi"
 
-# Chunking
+# Chunking — smaller chunks focus on style over memorization
 chunking:
-  min_chunk_words: 50
-  max_chunk_words: 800
+  min_chunk_words: 40
+  max_chunk_words: 300
   overlap_sentences: 2
+
+# Anonymization — strip character names and places to learn style not content
+anonymize: true
 
 # Classification thresholds
 classification:
