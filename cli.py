@@ -86,7 +86,7 @@ def run_craft_analyze_cmd():
         sys.exit(1)
 
     chunks = []
-    with open(chunks_path) as f:
+    with open(chunks_path, encoding="utf-8") as f:
         for line in f:
             chunks.append(json.loads(line))
 
@@ -114,7 +114,7 @@ def run_craft_generate_cmd():
         sys.exit(1)
 
     analyses = []
-    with open(analysis_path) as f:
+    with open(analysis_path, encoding="utf-8") as f:
         for line in f:
             analyses.append(json.loads(line))
 

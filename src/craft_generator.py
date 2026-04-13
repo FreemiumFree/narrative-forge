@@ -14,7 +14,7 @@ from anthropic import Anthropic
 
 load_dotenv()
 
-MODEL = "claude-opus-4-20250514"
+MODEL = "claude-sonnet-4-5"
 
 GENERATION_PROMPT = """You are a master fantasy fiction writer. Your task is to write an ORIGINAL passage that demonstrates a specific writing craft technique. The passage must be entirely original — new characters, new world, new situation. Do not reference any existing books, series, or authors.
 

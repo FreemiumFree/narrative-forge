@@ -1,0 +1,41 @@
+{
+  "total_pairs": 7686,
+  "train_pairs": 6917,
+  "val_pairs": 769,
+  "total_books": 25,
+  "type_breakdown": {
+    "transition": 647,
+    "prose": 2081,
+    "dialogue": 3921,
+    "worldbuilding": 79,
+    "internal": 958
+  },
+  "source_breakdown": {
+    "A Conjuring of Light_ A Novel ( PDFDrive ).pdf": 268,
+    "A Darker Shade of Magic, Book 1 by V. E. Schwab.epub": 133,
+    "A gathering of shadows.epub": 178,
+    "Belgariad #1 Pawn of Prophecy.mobi": 116,
+    "Belgariad #2 Queen of Sorcery.mobi": 138,
+    "Belgariad #3 Magician's Gambit.mobi": 127,
+    "Belgariad #4 Castle of Wizardry.mobi": 157,
+    "Belgariad #5 Enchanters' End Game.mobi": 153,
+    "Harry Potter_ The Complete Collection (1-7) - J. K. Rowling & Olly Moss.epub": 1584,
+    "Hobbit, The - J. R. R. Tolkien.epub": 129,
+    "Lord of the Rings - 01 - The Fellowship of the Ring - J. R. R. Tolkien.epub": 255,
+    "Lord of the Rings - 02 - The Two Towers - J. R. R. Tolkien.epub": 209,
+    "Lord of the Rings - 03 - The Return of the King - J. R. R. Tolkien.epub": 278,
+    "Malloreon #1 Guardians of the West.mobi": 167,
+    "Malloreon #2 King of the Murgos.mobi": 173,
+    "Malloreon #3 Demon Lord of Karanda.mobi": 156,
+    "Malloreon #4 Sorceress of Darshiva.mobi": 144,
+    "Malloreon #5 Seeress of Kell.mobi": 168,
+    "Oathbringer by Brandon Sanderson.epub": 590,
+    "Rhythm of War by Brandon Sanderson.epub": 595,
+    "The Fragile Threads of Power, Threads of Power (01) by V. E. Schwab.epub": 255,
+    "The Name of the Wind by Patrick Rothfuss.epub": 332,
+    "The Primal Hunter_ A LitRPG Adventure by Zogarth.epub": 265,
+    "The Way of Kings by Brandon Sanderson.epub": 597,
+    "Words of Radiance by Brandon Sanderson.epub": 519
+  },
+  "avg_completion_words": 746.4
+}

@@ -9,6 +9,7 @@ import yaml
 from src.extract import extract_from_directory
 from src.chunk import chunk_text, classify_chunk
 from src.pair_generator import generate_pairs
+from src.anonymize import anonymize_chunk
 
 
 def run_prepare(
@@ -19,6 +20,7 @@ def run_prepare(
     max_chunk_words: int = 800,
     train_split: float = 0.9,
     seed: int = 42,
+    anonymize: bool = True,
 ) -> dict:
     """Run the full data preparation pipeline.
 
@@ -45,17 +47,21 @@ def run_prepare(
         print("  WARNING: No books found. Add files to data/raw/")
         return {"total_pairs": 0, "total_books": 0, "type_breakdown": {}}
 
-    # Step 2: Chunk and classify
+    # Step 2: Chunk, classify, and anonymize
     all_chunks = []
     for book in books:
         chunks = chunk_text(book["text"], min_chunk_words, max_chunk_words)
         for chunk in chunks:
+            if anonymize:
+                chunk["text"] = anonymize_chunk(chunk["text"])
             chunk["type"] = classify_chunk(chunk["text"])
             chunk["source"] = book["source"]
         all_chunks.extend(chunks)
         print(f"  {book['source']}: {len(chunks)} chunks")
 
     print(f"  Total chunks: {len(all_chunks)}")
+    if anonymize:
+        print("  Anonymization: ON (character names and places replaced)")
 
     # Step 3: Generate instruction/completion pairs
     pairs = generate_pairs(all_chunks, templates)
